@@ -1,0 +1,12 @@
+# build output and installs
+dist/
+dev-dist/
+node_modules/
+test-results/
+playwright-report/
+package-lock.json
+# written by hand as prose; Prettier would only reshuffle it
+*.md
+# editor settings (comments allowed, personal)
+.vscode/
+public/

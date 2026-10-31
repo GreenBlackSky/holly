@@ -1,0 +1,22 @@
+# Only what is needed to build and test the app goes into git.
+
+# installed packages and build output: recreated by npm install / npm run build
+# (installs happen in the homebase workspace; this is here in case one is run here)
+node_modules/
+dist/
+dev-dist/
+.vite/
+
+# Playwright test output
+test-results/
+playwright-report/
+blob-report/
+
+# editor settings: personal, not part of the project
+.vscode/
+
+# logs, OS clutter, secrets
+*.log
+.env*
+.DS_Store
+Thumbs.db

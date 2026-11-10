@@ -1,0 +1,25 @@
+# Runs every check on each push to any branch (not on tags).
+# A PR into main can be merged only when this is green (a ruleset on main).
+# release.yml runs it again before deploying a tag.
+name: Tests
+on:
+  push:
+    branches: ['**']
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run check
+      - run: npm test

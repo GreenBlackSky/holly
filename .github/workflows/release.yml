@@ -1,0 +1,36 @@
+# Deploys the live site when a version tag (v1.3.0 ...) is pushed.
+# Release: on an up-to-date main, `git tag v1.3.0` then `git push origin v1.3.0`.
+# The tagged commit must be on main, and the tests run again first.
+# "Run workflow" on the Actions page redeploys by hand (from main or a tag).
+name: Release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check the commit is on main
+        run: git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install && npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DAILY_HELPERS }}
+          channelId: live
+          projectId: daily-helpers
